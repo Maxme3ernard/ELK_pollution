@@ -46,13 +46,7 @@ type Station struct {
 func main() {
 	// We fetch all stations
 
-	resp, err := http.Get("https://airnet.waqi.info/airnet/map/stations")
-	if err != nil {
-		// handle error
-		panic(err)
-	}
-	defer resp.Body.Close()
-	respTxt, err := ioutil.ReadAll(resp.Body)
+	respTxt := getRequestResponseAsBytes("https://airnet.waqi.info/airnet/map/stations")
 
 	var result StationsResponse
 	json.Unmarshal(respTxt, &result)
@@ -69,17 +63,7 @@ func main() {
 		}
 		fmt.Printf("station n %d: %s ", index, element.N)
 		var requestURL = getAPIURL(element.G[0], element.G[1])
-		resp, err = http.Get(requestURL)
-		if err != nil {
-			// handle error
-			panic(err)
-		}
-		defer resp.Body.Close()
-		respTxt, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			// handle error
-			panic(err)
-		}
+		respTxt = getRequestResponseAsBytes(requestURL)
 		var m DataResponse
 		json.Unmarshal(respTxt, &m)
 		fmt.Println("Air quality index : %d", m.Data.Aqi)
@@ -89,4 +73,19 @@ func main() {
 func getAPIURL(lat float64, lng float64) string {
 	token := "abe466e87b9df8832dfe2f08d96b915adbe4cdb1"
 	return "https://api.waqi.info/feed/geo:" + strconv.FormatFloat(lat, 'f', -1, 64) + ";" + strconv.FormatFloat(lng, 'f', -1, 64) + "/?token=" + token
+}
+
+func getRequestResponseAsBytes(requestURL string) []byte {
+	resp, err := http.Get(requestURL)
+	if err != nil {
+		// handle error
+		panic(err)
+	}
+	defer resp.Body.Close()
+	respTxt, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		// handle error
+		panic(err)
+	}
+	return respTxt
 }
