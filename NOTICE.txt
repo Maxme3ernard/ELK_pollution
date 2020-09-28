@@ -1,0 +1,5 @@
+polutbeat
+Copyright {year} Maxime Bernard
+
+This product includes software developed by The Apache Software
+Foundation (http://www.apache.org/).
