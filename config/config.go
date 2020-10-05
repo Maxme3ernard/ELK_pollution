@@ -6,9 +6,11 @@ package config
 import "time"
 
 type Config struct {
-	Period time.Duration `config:"period"`
+	Period	time.Duration `config:"period"`
+	URL 		string				`congig:"url"`
 }
 
 var DefaultConfig = Config{
 	Period: 1 * time.Second,
+	URL:		"",
 }

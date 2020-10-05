@@ -9,6 +9,7 @@ import (
 	"github.com/elastic/beats/v7/libbeat/logp"
 
 	"github.com/Maxme3ernard/polutbeat/config"
+	"github.com/Maxme3ernard/polutbeat/sniffer"
 )
 
 // polutbeat configuration.
@@ -58,6 +59,8 @@ func (bt *polutbeat) Run(b *beat.Beat) error {
 				"counter": counter,
 			},
 		}
+		// fetch data
+		// compute data
 		bt.client.Publish(event)
 		logp.Info("Event sent")
 		counter++
