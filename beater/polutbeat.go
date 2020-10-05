@@ -17,6 +17,7 @@ type polutbeat struct {
 	done   chan struct{}
 	config config.Config
 	client beat.Client
+	sniff *sniffer.Sniffer
 }
 
 // New creates an instance of polutbeat.

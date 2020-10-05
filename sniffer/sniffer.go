@@ -43,6 +43,10 @@ type Station struct {
 	Z string
 }
 
+type Sniffer struct {
+  token
+}
+
 func main() {
 	// We fetch all stations
 
