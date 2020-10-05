@@ -8,9 +8,11 @@ import "time"
 type Config struct {
 	Period	time.Duration `config:"period"`
 	URL 		string				`congig:"url"`
+	Token		string				`config:"token"`
 }
 
 var DefaultConfig = Config{
 	Period: 1 * time.Second,
-	URL:		"",
+	URL:		"https://airnet.waqi.info/airnet/map/stations",
+	Token:	"abe466e87b9df8832dfe2f08d96b915adbe4cdb1",
 }
