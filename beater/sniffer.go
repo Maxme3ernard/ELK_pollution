@@ -1,4 +1,4 @@
-package sniffer
+package beater
 
 import (
 	"encoding/json"
@@ -7,11 +7,10 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	"github.com/Maxme3ernard/polutbeat/config"
 )
 
 type Sniffer struct {
-	pb			*polutbeat
+	pb			*Polutbeat
 	URL			string
 	Token 	string
 	Timeout time.Duration
@@ -52,7 +51,7 @@ type Station struct {
 	Z string
 }
 
-func NewSniffer(pb *polutbeat, url string, token string) *Sniffer {
+func NewSniffer(pb *Polutbeat, url string, token string) *Sniffer {
 	s := &Sniffer{
 		pb: pb,
 		URL: url,
@@ -64,11 +63,11 @@ func NewSniffer(pb *polutbeat, url string, token string) *Sniffer {
 
 func (s *Sniffer) Run() {
 	// fetch all Stations
-	respTxt := s.getRequestResponseAsBytes(s.URL)
+	respTxt := getRequestResponseAsBytes(s.URL)
 	var result StationsResponse
 	json.Unmarshal(respTxt, &result)
 	s.Stations = result.Data
-	fmt.Println("nb  of stations %d", len(stations))
+	fmt.Println("nb  of stations %d", len(s.Stations))
 	for index, element := range s.Stations {
 		if (index+1)%100 == 0 {
 			// We are limited to 1000 calls a second
@@ -77,16 +76,21 @@ func (s *Sniffer) Run() {
 			time.Sleep(10 * time.Second)
 		}
 		fmt.Printf("station n %d: %s \n", index, element.N)
-		go getStationData(element.G[0], element.G[1])
+		go s.getStationData(element.G[0], element.G[1])
 	}
 }
 
 func (s *Sniffer) getStationData(lat float64, lng float64) {
+	now := time.Now()
 	requestURL := "https://api.waqi.info/feed/geo:" + strconv.FormatFloat(lat, 'f', -1, 64) + ";" + strconv.FormatFloat(lng, 'f', -1, 64) + "/?token=" + s.Token
 	respTxt := getRequestResponseAsBytes(requestURL)
 	var m DataResponse
 	json.Unmarshal(respTxt, &m)
-	fmt.Printf("Air quality index : %s\n", strconv.Itoa(m.Data.Aqi))
+	event := ApiEvent{
+		Timestamp:	now,
+		Data: 		m.Data,
+	}
+	s.pb.client.Publish(event.ToBeatEvent())
 }
 
 func getRequestResponseAsBytes(requestURL string) []byte {
@@ -102,4 +106,7 @@ func getRequestResponseAsBytes(requestURL string) []byte {
 		panic(err)
 	}
 	return respTxt
+}
+
+func (s *Sniffer) Stop(){
 }

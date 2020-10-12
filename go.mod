@@ -21,9 +21,11 @@ replace (
 require (
 	github.com/Sirupsen/logrus v1.0.1-0.20170608221441-85b1699d5056 // indirect
 	github.com/akavel/rsrc v0.9.0 // indirect
+	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/dlclark/regexp2 v1.2.1 // indirect
 	github.com/dop251/goja v0.0.0-20200926112436-fa030ff283f3 // indirect
 	github.com/dop251/goja_nodejs v0.0.0-20200811150831-9bc458b4bbeb // indirect
+	github.com/elastic/beats v7.6.2+incompatible
 	github.com/elastic/beats/v7 v7.0.0-alpha2.0.20200926074150-b4c7a93f65b3
 	github.com/elastic/go-sysinfo v1.4.0 // indirect
 	github.com/fatih/color v1.9.0 // indirect
