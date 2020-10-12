@@ -7,7 +7,16 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"github.com/Maxme3ernard/polutbeat/config"
 )
+
+type Sniffer struct {
+	pb			*polutbeat
+	URL			string
+	Token 	string
+	Timeout time.Duration
+	Stations   []Station
+}
 
 type StationsResponse struct {
 	Data   []Station `json:"data"`
@@ -43,22 +52,24 @@ type Station struct {
 	Z string
 }
 
-type Sniffer struct {
-  token
+func NewSniffer(pb *polutbeat, url string, token string) *Sniffer {
+	s := &Sniffer{
+		pb: pb,
+		URL: url,
+		Token: token,
+	}
+
+	return s
 }
 
-func main() {
-	// We fetch all stations
-
-	respTxt := getRequestResponseAsBytes("https://airnet.waqi.info/airnet/map/stations")
-
+func (s *Sniffer) Run() {
+	// fetch all Stations
+	respTxt := s.getRequestResponseAsBytes(s.URL)
 	var result StationsResponse
 	json.Unmarshal(respTxt, &result)
-	var stations = result.Data
+	s.Stations = result.Data
 	fmt.Println("nb  of stations %d", len(stations))
-
-	for index, element := range stations {
-
+	for index, element := range s.Stations {
 		if (index+1)%100 == 0 {
 			// We are limited to 1000 calls a second
 			// We stop every 500 stations and sleep for 1 second, just to be safe
@@ -67,20 +78,15 @@ func main() {
 		}
 		fmt.Printf("station n %d: %s \n", index, element.N)
 		go getStationData(element.G[0], element.G[1])
-
 	}
 }
-func getStationData(lat float64, lng float64) {
-	var requestURL = getAPIURL(lat, lng)
+
+func (s *Sniffer) getStationData(lat float64, lng float64) {
+	requestURL := "https://api.waqi.info/feed/geo:" + strconv.FormatFloat(lat, 'f', -1, 64) + ";" + strconv.FormatFloat(lng, 'f', -1, 64) + "/?token=" + s.Token
 	respTxt := getRequestResponseAsBytes(requestURL)
 	var m DataResponse
 	json.Unmarshal(respTxt, &m)
 	fmt.Printf("Air quality index : %s\n", strconv.Itoa(m.Data.Aqi))
-}
-
-func getAPIURL(lat float64, lng float64) string {
-	token := "abe466e87b9df8832dfe2f08d96b915adbe4cdb1"
-	return "https://api.waqi.info/feed/geo:" + strconv.FormatFloat(lat, 'f', -1, 64) + ";" + strconv.FormatFloat(lng, 'f', -1, 64) + "/?token=" + token
 }
 
 func getRequestResponseAsBytes(requestURL string) []byte {

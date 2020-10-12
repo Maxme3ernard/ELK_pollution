@@ -9,7 +9,6 @@ import (
 	"github.com/elastic/beats/v7/libbeat/logp"
 
 	"github.com/Maxme3ernard/polutbeat/config"
-	"github.com/Maxme3ernard/polutbeat/sniffer"
 )
 
 // polutbeat configuration.
@@ -17,7 +16,6 @@ type polutbeat struct {
 	done   chan struct{}
 	config config.Config
 	client beat.Client
-	sniff *sniffer.Sniffer
 }
 
 // New creates an instance of polutbeat.
@@ -44,27 +42,18 @@ func (bt *polutbeat) Run(b *beat.Beat) error {
 		return err
 	}
 
-	ticker := time.NewTicker(bt.config.Period)
-	counter := 1
+	sniff = NewSniffer(bt, bt.config.URL, bt.config.Token)
+
+
 	for {
 		select {
 		case <-bt.done:
 			return nil
-		case <-ticker.C:
 		}
 
-		event := beat.Event{
-			Timestamp: time.Now(),
-			Fields: common.MapStr{
-				"type":    b.Info.Name,
-				"counter": counter,
-			},
-		}
-		// fetch data
 		// compute data
-		bt.client.Publish(event)
-		logp.Info("Event sent")
-		counter++
+		// bt.client.Publish(event)
+		logp.Info("Data sent")
 	}
 }
 

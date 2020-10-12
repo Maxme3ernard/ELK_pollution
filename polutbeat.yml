@@ -6,8 +6,8 @@ polutbeat:
   # Defines how often an event is sent to the output
   period: 1s
   url: "https://airnet.waqi.info/airnet/map/stations"
-  tiken: "abe466e87b9df8832dfe2f08d96b915adbe4cdb1"
-
+  token: "abe466e87b9df8832dfe2f08d96b915adbe4cdb1"
+  timeout: 5s
 # ================================== General ===================================
 
 # The name of the shipper that publishes the network data. It can be used to group
@@ -166,4 +166,3 @@ processors:
 
 # This allows to enable 6.7 migration aliases
 #migration.6_to_7.enabled: true
-

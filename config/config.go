@@ -9,6 +9,7 @@ type Config struct {
 	Period	time.Duration `config:"period"`
 	URL 		string				`congig:"url"`
 	Token		string				`config:"token"`
+	Timeout time.Duration `config:"timeout"`
 }
 
 var DefaultConfig = Config{
