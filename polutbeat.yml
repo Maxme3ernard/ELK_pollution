@@ -84,7 +84,6 @@ output.elasticsearch:
   password: "polution"
 
 
-
 # ------------------------------ Logstash Output -------------------------------
 #output.logstash:
   # The Logstash hosts
