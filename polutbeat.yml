@@ -8,6 +8,7 @@ polutbeat:
   url: "https://airnet.waqi.info/airnet/map/stations"
   token: "abe466e87b9df8832dfe2f08d96b915adbe4cdb1"
   timeout: 5s
+
 # ================================== General ===================================
 
 # The name of the shipper that publishes the network data. It can be used to group
@@ -72,15 +73,17 @@ setup.kibana:
 # ---------------------------- Elasticsearch Output ----------------------------
 output.elasticsearch:
   # Array of hosts to connect to.
-  hosts: ["localhost:9200"]
+  hosts: ["tc405-112-02.insa-lyon.fr:9200"]
 
   # Protocol - either `http` (default) or `https`.
   #protocol: "https"
 
   # Authentication credentials - either API key or username/password.
   #api_key: "id:api_key"
-  #username: "elastic"
-  #password: "changeme"
+  username: "elkologie"
+  password: "polution"
+
+
 
 # ------------------------------ Logstash Output -------------------------------
 #output.logstash:
@@ -166,3 +169,21 @@ processors:
 
 # This allows to enable 6.7 migration aliases
 #migration.6_to_7.enabled: true
+# Set to false to disable template loading.
+setup.template.enabled: true
+
+# Select the kind of index template. From Elasticsearch 7.8, it is possible to
+# use component templates. Available options: legacy, component, index.
+# By default polutbeat uses the legacy index templates.
+#setup.template.type: legacy
+
+# Template name. By default the template name is "polutbeat-%{[agent.version]}"
+# The template name and pattern has to be set in case the Elasticsearch index pattern is modified.
+setup.template.name: "elkologie-%{[agent.version]}"
+
+# Template pattern. By default the template pattern is "-%{[agent.version]}-*" to apply to the default index settings.
+# The first part is the version of the beat and then -* is used to match all daily indices.
+# The template name and pattern has to be set in case the Elasticsearch index pattern is modified.
+setup.template.pattern: "elkologie-%{[agent.version]}-*"
+
+index: "elkologie-"
