@@ -166,6 +166,8 @@ processors:
 
 # ================================= Migration ==================================
 
+setup.ilm.enabled: false
+
 # This allows to enable 6.7 migration aliases
 #migration.6_to_7.enabled: true
 # Set to false to disable template loading.
@@ -178,11 +180,11 @@ setup.template.enabled: true
 
 # Template name. By default the template name is "polutbeat-%{[agent.version]}"
 # The template name and pattern has to be set in case the Elasticsearch index pattern is modified.
-setup.template.name: "elkologie-%{[agent.version]}"
+setup.template.name: "elkologie-template"
 
 # Template pattern. By default the template pattern is "-%{[agent.version]}-*" to apply to the default index settings.
 # The first part is the version of the beat and then -* is used to match all daily indices.
 # The template name and pattern has to be set in case the Elasticsearch index pattern is modified.
-setup.template.pattern: "elkologie-%{[agent.version]}-*"
+setup.template.pattern: "elkologie-*"
 
-index: "elkologie-"
+index: "elkologie-ttest"
