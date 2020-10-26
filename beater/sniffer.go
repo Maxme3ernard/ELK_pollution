@@ -68,17 +68,17 @@ func (s *Sniffer) Run() {
 	json.Unmarshal(respTxt, &result)
 	s.Stations = result.Data
 	fmt.Println("nb  of stations %d", len(s.Stations))
-	s.getStationData(s.Stations[0].G[0], s.Stations[0].G[1])
-	// for index, element := range s.Stations {
-	// 	if (index+1)%100 == 0 {
-	// 		// We are limited to 1000 calls a second
-	// 		// We stop every 500 stations and sleep for 1 second, just to be safe
-	// 		// fmt.Println("stop cond reached %d ", index)
-	// 		time.Sleep(10 * time.Second)
-	// 	}
-	// 	fmt.Printf("station n %d: %s \n", index, element.N)
-	// 	go s.getStationData(element.G[0], element.G[1])
-	// }
+	//s.getStationData(s.Stations[0].G[0], s.Stations[0].G[1])
+	 for index, element := range s.Stations {
+	 	if (index+1)%100 == 0 {
+	 		// We are limited to 1000 calls a second
+	 		// We stop every 500 stations and sleep for 1 second, just to be safe
+	 		// fmt.Println("stop cond reached %d ", index)
+	 		//time.Sleep(10 * time.Second)
+	 	}
+	 	// fmt.Printf("station n %d: %s \n", index, element.N)
+	 	go s.getStationData(element.G[0], element.G[1])
+	 }
 }
 
 func (s *Sniffer) getStationData(lat float64, lng float64) {

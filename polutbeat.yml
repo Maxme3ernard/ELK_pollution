@@ -4,10 +4,10 @@
 
 polutbeat:
   # Defines how often an event is sent to the output
-  period: 1s
+  period: 15s
   url: "https://airnet.waqi.info/airnet/map/stations"
   token: "abe466e87b9df8832dfe2f08d96b915adbe4cdb1"
-  timeout: 5s
+  #  timeout: 5s
 
 # ================================== General ===================================
 
@@ -73,7 +73,7 @@ setup.kibana:
 # ---------------------------- Elasticsearch Output ----------------------------
 output.elasticsearch:
   # Array of hosts to connect to.
-  hosts: ["localhost:9200"]
+  hosts: ["tc405-112-02"]
 
   # Protocol - either `http` (default) or `https`.
   #protocol: "https"
@@ -82,7 +82,7 @@ output.elasticsearch:
   #api_key: "id:api_key"
   username: "elkologie"
   password: "polution"
-
+  index: "elkologie-ttest"
 
 # ------------------------------ Logstash Output -------------------------------
 #output.logstash:
@@ -187,4 +187,3 @@ setup.template.name: "elkologie-template"
 # The template name and pattern has to be set in case the Elasticsearch index pattern is modified.
 setup.template.pattern: "elkologie-*"
 
-index: "elkologie-ttest"
