@@ -3,6 +3,7 @@ package beater
 import (
 	"fmt"
 
+	"time"
 	"github.com/elastic/beats/v7/libbeat/beat"
 	"github.com/elastic/beats/v7/libbeat/common"
 	"github.com/elastic/beats/v7/libbeat/logp"
@@ -33,22 +34,38 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 
 // Run starts polutbeat.
 func (bt *Polutbeat) Run(b *beat.Beat) error {
+
 	logp.Info("polutbeat is running! Hit CTRL-C to stop it.")
 
 	var err error
+	//var wg sync.WaitGroup
 	bt.client, err = b.Publisher.Connect()
 	if err != nil {
 		return err
 	}
+	for {
+		fmt.Println("new loop")
+		select {
+			case <-bt.done:
+				logp.Info("bt.done")
+				return nil
+			default:
 
-	sniff := NewSniffer(bt, bt.config.URL, bt.config.Token)
-	sniff.Run()
+		}
+		fmt.Println("previous wg done")
+		fmt.Println("Wait time %d",bt.config.Period)
+		sniff := NewSniffer(bt, bt.config.URL, bt.config.Token)
+		fmt.Println("running sniff")
+		//wg.Add(1)
+		go sniff.Run()
+		fmt.Println("wait")
+		time.Sleep(bt.config.Period)
+		fmt.Println("go on")
+		//wg.Wait()
 
-	select {
-	case <-bt.done:
-		logp.Info("bt.done")
-		return nil
+		//defer time.Sleep(bt.config.Period)
 	}
+	return nil
 
 }
 

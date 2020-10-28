@@ -61,27 +61,29 @@ func NewSniffer(pb *Polutbeat, url string, token string) *Sniffer {
 	return s
 }
 
-func (s *Sniffer) Run() {
+func (s *Sniffer) Run() error{
 	// fetch all Stations
 	respTxt := getRequestResponseAsBytes(s.URL)
 	var result StationsResponse
 	json.Unmarshal(respTxt, &result)
 	s.Stations = result.Data
 	fmt.Println("nb  of stations %d", len(s.Stations))
-	//s.getStationData(s.Stations[0].G[0], s.Stations[0].G[1])
-	 for index, element := range s.Stations {
-	 	if (index+1)%100 == 0 {
+	s.getStationData(s.Stations[0].G[0], s.Stations[0].G[1])
+	 //for index, element := range s.Stations {
+	 	//if (index+1)%100 == 0 {
 	 		// We are limited to 1000 calls a second
 	 		// We stop every 500 stations and sleep for 1 second, just to be safe
 	 		// fmt.Println("stop cond reached %d ", index)
 	 		//time.Sleep(10 * time.Second)
-	 	}
+	 	//}
 	 	// fmt.Printf("station n %d: %s \n", index, element.N)
-	 	go s.getStationData(element.G[0], element.G[1])
-	 }
+	 	//go s.getStationData(element.G[0], element.G[1])
+	 //}
+	 fmt.Println("run done")
+	 return nil
 }
 
-func (s *Sniffer) getStationData(lat float64, lng float64) {
+func (s *Sniffer) getStationData(lat float64, lng float64) error {
 	now := time.Now()
 	requestURL := "https://api.waqi.info/feed/geo:" + strconv.FormatFloat(lat, 'f', -1, 64) + ";" + strconv.FormatFloat(lng, 'f', -1, 64) + "/?token=" + s.Token
 	respTxt := getRequestResponseAsBytes(requestURL)
@@ -92,6 +94,8 @@ func (s *Sniffer) getStationData(lat float64, lng float64) {
 		Data: 		m.Data,
 	}
 	s.pb.client.Publish(event.ToBeatEvent())
+	fmt.Println("event published")
+	return nil
 }
 
 func getRequestResponseAsBytes(requestURL string) []byte {
@@ -109,5 +113,7 @@ func getRequestResponseAsBytes(requestURL string) []byte {
 	return respTxt
 }
 
-func (s *Sniffer) Stop(){
+func (s *Sniffer) Stop()error {
+	fmt.Println("sniffer stop called")
+	return nil
 }
