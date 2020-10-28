@@ -9,25 +9,42 @@ import (
 type ApiEvent struct {
 	Timestamp    time.Time
 	Fields       common.MapStr
-  Data         DataPoint
+  Data         Data
 }
 
 func (a *ApiEvent) ToBeatEvent() beat.Event {
 	event := beat.Event{
 		Timestamp: a.Timestamp,
 	}
+	/*
+	type Data struct {
+		Aqi int
+		Idx int
+		Attributions [] struct {
+		Url string
+		Name string
+		Logo string
+	}
+		City  City
+		Dominentpol string
+		Iaqi Iaqi
+		Time Time
+		Forecast Forecast
+		Debug Debug
 
+	}
+	*/
 	event.Fields = common.MapStr{
       "Aqi":          a.Data.Aqi,
     	"Idx":          a.Data.Idx,
     	"Attributions": a.Data.Attributions,
-    	"city":         a.Data.city,
-    	"DominentPol":  a.Data.DominentPol,
-    	"iaqi":         a.Data.iaqi,
-    	"time":         a.Data.time,
-    	"forecast":     a.Data.forecast,
-    	"debug":        a.Data.debug,
+    	"city":         a.Data.City,
+    	"DominentPol":  a.Data.Dominentpol,
+    	"iaqi":         a.Data.Iaqi,
+    	"time":         a.Data.Time,
+    	"forecast":     a.Data.Forecast,
+    	"debug":        a.Data.Debug,
   }
-	
+
 	return event
 }
