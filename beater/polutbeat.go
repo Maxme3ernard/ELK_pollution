@@ -2,7 +2,7 @@ package beater
 
 import (
 	"fmt"
-	"time"
+
 	"github.com/elastic/beats/v7/libbeat/beat"
 	"github.com/elastic/beats/v7/libbeat/common"
 	"github.com/elastic/beats/v7/libbeat/logp"
@@ -36,31 +36,20 @@ func (bt *Polutbeat) Run(b *beat.Beat) error {
 	logp.Info("polutbeat is running! Hit CTRL-C to stop it.")
 
 	var err error
-	var sniff = nil
 	bt.client, err = b.Publisher.Connect()
 	if err != nil {
 		return err
 	}
 
+	sniff := NewSniffer(bt, bt.config.URL, bt.config.Token)
+	sniff.Run()
 
-	for {
-		select {
-		case <-bt.done:
-			logp.Info("bt.done")
-
-			return nil
-		default:
-				timeout := bt.config.Timeout
-				time.Sleep(timeout)
-				logp.Info("running new sniffer after %d",timeout)
-				if sniff!=nil {
-					sniff := NewSniffer(bt, bt.config.URL, bt.config.Token)
-					sniff.Run()
-
-				}
-
-		}
+	select {
+	case <-bt.done:
+		logp.Info("bt.done")
+		return nil
 	}
+
 }
 
 // Stop stops polutbeat.
