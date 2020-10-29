@@ -1,0 +1,14 @@
+{
+    "mappings": {
+        "properties": {
+            "city": {
+                "type":   "multi_field",
+                "fields": {
+                    "Geo": { "type": "geo_point" },
+                    "Url": { "type": "string" },
+                    "Name":    { "type": "string" }
+                }
+            }
+        }
+    }
+}
